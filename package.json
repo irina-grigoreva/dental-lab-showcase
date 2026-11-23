@@ -1,0 +1,27 @@
+{
+  "name": "dental-lab-showcase",
+  "version": "1.0.0",
+  "description": "Concept website for Elident dental articulators, built with Astro.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1 --port 4321",
+    "build": "astro build",
+    "preview": "astro preview --host 127.0.0.1 --port 4321",
+    "check": "astro check",
+    "test:links": "node scripts/check-links.mjs",
+    "test": "astro check && astro build && node scripts/check-links.mjs"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "dependencies": {
+    "astro": "^7.4.13"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@playwright/test": "^1.65.1",
+    "typescript": "^6.0.3"
+  },
+  "license": "UNLICENSED"
+}
