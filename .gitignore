@@ -1,0 +1,23 @@
+# dependencies and build output
+node_modules/
+dist/
+.astro/
+
+# logs and local env
+*.log
+.env
+.env.*
+.DS_Store
+Thumbs.db
+
+# test and report output
+test-results/
+playwright-report/
+blob-report/
+
+# Lighthouse report (large; regenerate with the command in README if needed)
+docs/lighthouse-home.json
+
+# Local skill symlinks point at an absolute path on one machine.
+# Skills live in .agents/skills (committed); recreate the .claude/skills links on each machine.
+.claude/
