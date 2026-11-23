@@ -1,0 +1,275 @@
+---
+import Base from '../layouts/Base.astro';
+import Arrow from '../components/Arrow.astro';
+import { FAQ, LABS, MEDIA, STEPS, STMT_WORDS, TESTIMONIALS, productById, productHref } from '../data/content';
+
+const systems = [productById('reusable'), productById('disposable')];
+const kitMedia = MEDIA.kit;
+const founder = MEDIA.aronov;
+---
+<Base
+  title="Elident — Dental articulators for the lab bench"
+  description="Elident dental articulators for the lab bench: a reusable system and single-use articulators with blue side fixators, designed by dental technician Ilya Aronov. Try the sample kit."
+  page="home"
+>
+<div class="page" data-page-root>
+
+  <!-- 1. HERO -->
+  <section class="hero" aria-labelledby="hero-title" data-hero>
+    <div class="wrap hero-grid">
+      <div class="hero-head">
+        <p class="eyebrow">Elident · Dental lab equipment</p>
+        <h1 id="hero-title" class="hero-title"><span class="ln"><span>Dental articulators</span></span><span class="ln"><span>for the <em class="serif">lab bench.</em></span></span></h1>
+      </div>
+      <div class="hero-copy">
+        <p class="lead">Elident articulators hold upper and lower models in position, so you can check the bite and finish restorations at the bench.</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="/product/kit">View Sample Kit<Arrow /></a>
+          <a class="btn btn-secondary" href="#how-it-works">See How It Works</a>
+        </div>
+        <ul class="badges" aria-label="About the product">
+          <li class="badge-trust"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Made in U.S.A.</li>
+          <li class="badge-trust"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Designed by a dental technician</li>
+        </ul>
+      </div>
+      <figure class="hero-media hero-frame">
+        <span class="ph-tag"><span class="dot" aria-hidden="true"></span>Fig. 01 — Elident articulator, models mounted</span>
+        <span class="hero-light" aria-hidden="true"></span>
+        <div class="ph" style="aspect-ratio: 16 / 10"><img src={MEDIA.hero.src} alt="Elident articulator with upper and lower models mounted and blue side locks, front view on black" data-hero-img></div>
+      </figure>
+      <dl class="proof" aria-label="Elident in numbers">
+        <div class="proof-item"><dt class="proof-label">Uses tested · reusable</dt><dd style="margin: 0; order: -1"><span class="proof-num"><span data-to="20">20</span><small>×</small></span></dd></div>
+        <div class="proof-item"><dt class="proof-label">Min. die thickness</dt><dd style="margin: 0; order: -1"><span class="proof-num"><span data-to="2">2</span><small>mm</small></span></dd></div>
+        <div class="proof-item"><dt class="proof-label">Per set · disposable bag of 50</dt><dd style="margin: 0; order: -1"><span class="proof-num">$<span data-to="2" data-dec="2">2.00</span></span></dd></div>
+        <div class="proof-item"><dt class="proof-label">Sample kit</dt><dd style="margin: 0; order: -1"><span class="proof-num">$<span data-to="8" data-dec="2">8.00</span></span></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- STATEMENT: words light up as you scroll -->
+  <section class="statement" aria-label="About Elident" data-stmt>
+    <div class="wrap stmt-grid">
+      <p class="eyebrow">Made at the bench</p>
+      <p class="stmt-text">{STMT_WORDS.map((w) => <><span class="sw">{w} </span></>)}</p>
+    </div>
+  </section>
+
+  <!-- 2. HOW IT WORKS -->
+  <section class="how" id="how-it-works" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="t">
+          <p class="eyebrow">How It Works</p>
+          <h2 data-split id="how-title" class="h1">One system, three scales.</h2>
+        </div>
+        <div class="d"><p>The whole articulator, the blue side lock, and the models in occlusion — with photos from real lab cases.</p></div>
+      </div>
+    </div>
+
+    <!-- Desktop & tablet: one compact scene (pinned only when the window height allows it) -->
+    <div class="how-track" data-how-track>
+      <div class="how-pin">
+        <div class="wrap how-scene">
+          <div class="how-copy">
+            <div class="how-num" aria-hidden="true">
+              {STEPS.map((s, i) => <span class={i === 0 ? 'is-on' : 'is-below'} data-num={i}>{s.num}</span>)}
+            </div>
+            <div class="how-texts">
+              {STEPS.map((s, i) => (
+                <article class:list={['how-text', i === 0 && 'is-on']} aria-hidden={i === 0 ? 'false' : 'true'} aria-labelledby={`how-step-${i}`} data-text={i}>
+                  <h3 class="how-title" id={`how-step-${i}`}><span>{s.t1}</span> <span>{s.t2}</span></h3>
+                  <p class="how-desc">{s.copy}</p>
+                  <figure class="lab-inset"><img src={s.labSrc} alt={s.labAlt} loading="lazy"><figcaption><b class="lab-k">In the lab</b>{s.labCap}</figcaption></figure>
+                </article>
+              ))}
+            </div>
+            <div class="how-ctrl">
+              <div class="tabs" role="group" aria-label="Choose a step" data-tabs>
+                {STEPS.map((s, i) => (
+                  <button type="button" class:list={['tab', i === 0 && 'is-on']} aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`Step ${i + 1}: ${s.t1} ${s.t2}`} data-tab={i} tabindex={i === 0 ? '0' : '-1'}>{s.num}</button>
+                ))}
+              </div>
+              <div class="progress" aria-hidden="true"><span data-progress style="transform: scaleX(0.3333333333333333)"></span></div>
+            </div>
+          </div>
+          <div class="how-stage">
+            <div class="stage-frame">
+              {STEPS.map((s, i) => (
+                <figure class:list={['stage-item', `st-${i}`, i === 0 && 'is-on']} aria-hidden={i === 0 ? 'false' : 'true'} style={`transform-origin: ${s.origin}`} data-stage-item={i} data-caption={s.caption}>
+                  <img src={s.src} alt={s.alt}>
+                  {s.callout && (
+                    <span class="callout" style={`left: ${s.cx}; top: ${s.cy}`} aria-hidden="true"><span class="callout-dot"></span><span class="callout-line"></span><span class="callout-label">{s.calloutLabel}</span></span>
+                  )}
+                </figure>
+              ))}
+              <span class="ph-tag stage-tag" aria-live="polite"><span class="dot" aria-hidden="true"></span><span data-stage-caption>Fig. 01 — Articulator with models mounted</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone: the same three frames in the page flow -->
+    <ol class="wrap how-flow">
+      {STEPS.map((s) => (
+        <li class="flow-item">
+          <figure class="flow-fig">
+            <div class="ph" style="aspect-ratio: 1 / 1"><img src={s.src} alt={s.alt} loading="lazy"></div>
+            {s.callout && (
+              <span class="callout" style={`left: ${s.cx}; top: ${s.cy}`} aria-hidden="true"><span class="callout-dot"></span><span class="callout-line"></span><span class="callout-label">{s.calloutLabel}</span></span>
+            )}
+          </figure>
+          <p class="flow-num" aria-hidden="true">{s.num}</p>
+          <h3 class="how-title"><span>{s.t1}</span> <span>{s.t2}</span></h3>
+          <p class="how-desc">{s.copy}</p>
+          <figure class="lab-inset"><img src={s.labSrc} alt={s.labAlt} loading="lazy"><figcaption><b class="lab-k">In the lab</b>{s.labCap}</figcaption></figure>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- 3. CHOOSE YOUR SYSTEM -->
+  <section class="sec sys-sec" aria-labelledby="sys-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="t">
+          <p class="eyebrow">Choose Your System</p>
+          <h2 data-split id="sys-title" class="h1">Two formats, one articulator design.</h2>
+        </div>
+        <p class="d">Compare the reusable system and the disposable sets side by side.</p>
+      </div>
+      <div class="sys-grid">
+        {systems.map((p) => (
+          <article class="card sys-card">
+            <figure class="media" style="margin: 0">
+              <div class="ph" style="aspect-ratio: 4 / 3"><img src={p.media.src} alt={p.media.alt} loading="lazy"></div>
+              <figcaption class="sys-cap">{p.shown}</figcaption>
+            </figure>
+            <div class="card-body">
+              <p class="eyebrow">{p.catLabel}</p>
+              <h3 class="card-title">{p.short}</h3>
+              <dl class="rows cmp">
+                <dt>Use</dt><dd>{p.cmpUse}</dd>
+                <dt>Pack size</dt><dd>{p.cmpPack}</dd>
+                <dt>Price</dt><dd><span class="price num">{p.cmpPrice}</span>{p.cmpPriceNote && <small class="price-note">{p.cmpPriceNote}</small>}</dd>
+              </dl>
+              <div class="card-foot">
+                <a class="btn btn-secondary stretched" href={productHref(p.id)}>{p.cta}<Arrow /></a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div class="hints">
+        <p class="hint"><span class="hint-k">Keep it on the bench</span><span class="hint-v">Reusable System</span></p>
+        <p class="hint"><span class="hint-k">Send it out with every case</span><span class="hint-v">Disposable Articulators</span></p>
+      </div>
+      <div class="calc2" data-calc>
+        <button type="button" class="calc2-toggle" aria-expanded="false" aria-controls="calc2-panel" data-calc-toggle><span>Estimate disposable cost for your lab</span><span class="faq-icon" aria-hidden="true"></span></button>
+        <div class="calc2-panel" id="calc2-panel" role="region" aria-label="Disposable cost estimate">
+          <div class="calc2-in">
+            <label class="calc-label" for="calc-cases"><span>Cases per month</span><output class="calc-out num" for="calc-cases" data-calc-out>60</output></label>
+            <input id="calc-cases" class="range" type="range" min="10" max="400" step="5" value="60" data-calc-range style="--fill: 12.8%">
+            <div class="calc-rows">
+              <div class="calc-row"><span class="calc-name">Sets used<small data-calc-sets>60 sets × $2.00 per set</small></span><span class="calc-val num" data-calc-used>$120.00</span></div>
+              <div class="calc-row"><span class="calc-name">Bags purchased<small data-calc-bags>2 × $100.00 per bag of 50 · 40 sets left over</small></span><span class="calc-val num" data-calc-bought>$200.00</span></div>
+            </div>
+            <p class="fine">Based on Elident’s catalog price for a bag of 50 disposable sets. Reusable pricing is available on request.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <div class="px-tr" data-px data-px-from=".sys-sec" data-px-to=".proof-sec" aria-hidden="true"></div>
+  <section class="sec proof-sec" aria-labelledby="t-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="t"><p class="eyebrow">From technicians</p><h2 data-split id="t-title" class="h1">Trusted at the bench.</h2></div>
+        <p class="d">Quotes from labs that use Elident.</p>
+      </div>
+      <div class="t-grid">
+        {TESTIMONIALS.map((q) => (
+          <figure class="t-card">
+            <svg class="t-mark" width="32" height="24" viewBox="0 0 32 24" fill="none" aria-hidden="true"><path d="M0 24V14C0 6 4 1 12 0l1 4c-4 1-6 4-6 8h6v12H0zm19 0V14c0-8 4-13 12-14l1 4c-4 1-6 4-6 8h6v12H19z" fill="currentColor"></path></svg>
+            <blockquote>{q.quote}</blockquote>
+            <figcaption><span class="t-avatar" aria-hidden="true">{q.initials}</span><span><b>{q.name}</b><small>{q.role}</small></span></figcaption>
+          </figure>
+        ))}
+      </div>
+      <div class="logos" aria-label="Labs using Elident (demo)">
+        <div class="logo-track">
+          {LABS.map((l) => <span class="logo-slot">{l}</span>)}
+          {LABS.map((l) => <span class="logo-slot" aria-hidden="true">{l}</span>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. SAMPLE KIT (light) -->
+  <div class="px-tr" data-px data-px-from=".proof-sec" data-px-to=".kit" aria-hidden="true"></div>
+  <section class="sec kit kit-light" id="sample-kit-teaser" aria-labelledby="kit-title" data-kit>
+    <div class="wrap grid">
+      <figure class="kit-media" style="margin: 0">
+        <div class="ph" style="aspect-ratio: 16 / 10"><img src={kitMedia.src} alt={kitMedia.alt} loading="lazy"></div>
+        <figcaption class="sys-cap">Elident’s photo of the sample kit.</figcaption>
+      </figure>
+      <div class="kit-copy">
+        <p class="eyebrow">Sample Kit</p>
+        <h2 data-split id="kit-title" class="h1">Try Elident on <em class="serif">your own cases.</em></h2>
+        <p class="muted" style="font-size: var(--fs-body); line-height: 1.6">Mount your own models first, then choose the system to keep on the bench.</p>
+        <dl class="rows">
+          <dt>Shown in the photo</dt><dd>Articulator, guide pin, thumb screw, nut</dd>
+          <dt>Price</dt><dd><span class="price num">$8.00</span><small class="price-note">per kit</small></dd>
+        </dl>
+        <div class="btn-row"><a class="btn btn-primary" href="/product/kit">View Sample Kit<Arrow /></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. FAQ -->
+  <section class="sec faq" id="faq" aria-labelledby="faq-title">
+    <div class="wrap faq-grid">
+      <div class="faq-head">
+        <p class="eyebrow">FAQ</p>
+        <h2 data-split id="faq-title" class="faq-title">Questions before you order?</h2>
+        <p class="faq-more" style="margin-top: 4px">Can’t find your answer? <a class="faq-link" href="/about#contact">Ask Elident<Arrow size={14} /></a></p>
+      </div>
+      <div class="faq-col">
+        <div class="faq-list" data-faq-list>
+          {FAQ.map((f, i) => (
+            <div class:list={['faq-item', i === 0 && 'is-open']}>
+              <h3 class="faq-h"><button type="button" class="faq-q" id={`faq-q${i + 1}`} aria-expanded={i === 0 ? 'true' : 'false'} aria-controls={`faq-a${i + 1}`} data-faq={i}><span>{f.q}</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+              <div class="faq-a" id={`faq-a${i + 1}`} role="region" aria-labelledby={`faq-q${i + 1}`}><div class="faq-a-in"><p>{f.a}{f.link && <>{' '}<a class="faq-link" href="/product/kit">View Sample Kit<Arrow size={14} /></a></>}</p></div></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDER -->
+  <section class="sec founder" id="founder" aria-labelledby="about-title">
+    <div class="wrap grid">
+      <figure class="founder-media">
+        <div class="ph" style="aspect-ratio: 4 / 5"><img src={founder.src} alt={founder.alt} loading="lazy"></div>
+        <figcaption class="small muted" style="padding-top: 12px">The Elident system at the lab bench</figcaption>
+      </figure>
+      <div class="founder-copy">
+        <p class="eyebrow">Made by a technician</p>
+        <p data-split class="founder-quote">Dental technician Ilya Aronov developed the Elident articulator for day-to-day lab work.</p>
+        <p class="muted">Ilya Aronov specializes in ceramic restoration, implants, and gold work. He set out to make a model articulator that is fast, stable, accurate, and economical — without the time and multiple materials other systems required.</p>
+        <ul class="founder-facts">
+          <li><b>20×</b><span>uses tested · reusable</span></li>
+          <li><b>U.S. Pat.</b><span>embossed on the tray</span></li>
+          <li><b>NY</b><span>Flushing, New York</span></li>
+        </ul>
+        <div class="btn-row"><a class="btn btn-secondary" href="/about">About &amp; Contact<Arrow /></a></div>
+      </div>
+    </div>
+  </section>
+  <div class="px-tr" data-px data-px-from=".founder" data-px-to=".ftr" aria-hidden="true"></div>
+
+</div>
+</Base>
