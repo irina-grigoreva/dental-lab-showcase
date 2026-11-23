@@ -1,0 +1,79 @@
+/* Project-level rules that sit on top of the design CSS in site.css. */
+
+/* The mobile sheet is toggled with the `hidden` attribute; the design CSS sets display:flex on it,
+   so [hidden] has to win explicitly. */
+.el .sheet[hidden] { display: none !important; }
+
+/* Skip link: invisible until it receives keyboard focus. */
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: 12px;
+  z-index: 300;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #1453C7;
+  color: #FFFFFF;
+  font: 600 14px/1 var(--sans, system-ui, sans-serif);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid #4BB7E8;
+  outline-offset: 2px;
+}
+
+/* Shop filter: labels stay on one line; on very narrow screens the control scrolls sideways instead. */
+.el .xseg-btn { white-space: nowrap; }
+
+/* Phones: the four filters form a 2x2 grid, so every label fits without sideways scrolling.
+   The sliding indicator is replaced by the filled background of the active button. */
+@media (max-width: 599px) {
+  .el .xseg {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    width: 100%;
+    border-radius: 22px;
+    overflow: visible;
+  }
+  .el .xseg-ind { display: none; }
+  .el .xseg-btn { justify-content: center; min-height: 44px; padding: 0 10px; font-size: 13px; }
+  .el .xseg-btn.is-on { background: var(--ink); color: #FFFFFF; }
+}
+
+/* Product page, "At the bench": three photos in one even row on tablet and desktop.
+   Equal columns, equal photo heights, no offsets. Phones keep the stacked layout from site.css. */
+@media (min-width: 768px) {
+  .el .xbench-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 24px; }
+  .el .xbench-fig.is-0, .el .xbench-fig.is-1, .el .xbench-fig.is-2 { grid-column: auto; margin-top: 0; }
+  .el .xbench-fig .ph, .el .xbench-fig.is-0 .ph { aspect-ratio: 4 / 5; }
+}
+
+/* Spec tables: label and value cells both fill the row height, so their divider lines always meet,
+   even when a value wraps to two lines (phones and narrow columns). */
+.el .xspec dt,
+.el .xspec dd { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+.el .xspec dd { align-items: flex-end; }
+
+/* Pixel strips sit 1px over the section above, so a hairline border at the join is covered
+   and no light line shows between the section and the squares. */
+.el .px-tr { position: relative; z-index: 2; margin-top: -1px; }
+
+/* The strip that leads into the footer overlaps the footer by 2px. Its colour equals the footer's,
+   so a sub-pixel gap at the join (which showed the light page behind it) cannot appear. */
+.el .px-tr[data-px-to=".ftr"] { margin-bottom: -2px; }
+
+/* Every pixel strip overlaps the section below by 2px. The section's colour is the strip's last row,
+   so a sub-pixel gap at the join (which showed the light page behind it) cannot appear. */
+.el .px-tr { margin-bottom: -2px; }
+
+/* Tablet and phone: pixel strips overlap the section below by 7px (desktop keeps 2px).
+   This hides the hairline seams that show at smaller sizes. */
+@media (max-width: 1023px) {
+  .el .px-tr { margin-bottom: -7px; }
+}
+
+/* Statement words start at a readable 45% and light up to full ink while the page scrolls. */
+.el .stmt-text .sw { opacity: .45; }
