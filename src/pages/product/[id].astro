@@ -1,0 +1,134 @@
+---
+import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
+import { BENCH, PRODUCTS, priceSub, priceText, productById, productHref } from '../../data/content';
+
+export function getStaticPaths() {
+  return PRODUCTS.map((p) => ({ params: { id: p.id } }));
+}
+
+const product = productById(Astro.params.id as string);
+const isKit = product.id === 'kit';
+const gallery = product.gallery.map((g, i) => ({ ...g, num: '0' + (i + 1), on: i === 0 }));
+const multi = gallery.length > 1;
+const systems = [productById('reusable'), productById('disposable')];
+const related = PRODUCTS.filter((p) => p.id !== product.id);
+const bench = BENCH.slice(0, 3).map((b, i) => ({ ...b, cls: 'is-' + i }));
+const title = `${product.name} — Elident`;
+---
+<Base title={title} description={product.blurb} page="product">
+<div class="page xpdp" data-pdp data-product={product.id}>
+  <div class="wrap xpdp-crumbs"><nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/shop">Shop</a><span aria-hidden="true">/</span><span aria-current="page">{product.short}</span></nav></div>
+  <div class="wrap xpdp-top">
+    <section class="xgal" aria-label="Product photos" data-gallery>
+      <div class="xgal-stage" data-stage>
+        {gallery.map((g) => (
+          <figure class:list={['xgal-item', g.on && 'is-on']} aria-hidden={g.on ? 'false' : 'true'} data-slide={g.num} data-label={g.label}><img src={g.src} alt={`${product.name}: ${g.label}`}></figure>
+        ))}
+        {multi && <span class="xgal-count num" aria-live="polite" data-gal-now>01 / 0{gallery.length}</span>}
+        <button type="button" class="xgal-zoom" aria-pressed="false" aria-label="Zoom photo" data-zoom><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M10.5 10.5L14 14M7 5v4M5 7h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg><span>Zoom</span></button>
+      </div>
+      {multi && (
+        <div class="xgal-bar">
+          <div class="xthumbs" role="group" aria-label="Choose a photo">
+            {gallery.map((g, i) => (
+              <button type="button" class:list={['xthumb', g.on && 'is-on']} aria-pressed={g.on ? 'true' : 'false'} aria-label={`Photo ${i + 1} of ${gallery.length}: ${g.label}`} data-thumb={i} tabindex={g.on ? '0' : '-1'}><img src={g.src} alt="" loading="lazy"></button>
+            ))}
+          </div>
+          <div class="xgal-nav">
+            <button type="button" class="icon-btn" aria-label="Previous photo" data-gal-prev><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+            <button type="button" class="icon-btn" aria-label="Next photo" data-gal-next><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+          </div>
+        </div>
+      )}
+      <p class="xgal-cap" data-gal-cap>Fig. 01 — {gallery[0].label}</p>
+    </section>
+
+    <aside class="xbuy" aria-label="Order">
+      <p class="eyebrow">{product.catLabel}</p>
+      <h1 class="xbuy-name">{product.name}</h1>
+      <p class="xbuy-lead">{product.lead}</p>
+      <div class="xbuy-price"><span class="xprice">{priceText(product)}<small>{priceSub(product)}</small></span></div>
+      <div class="xbuy-qty">
+        <span class="x-label" id="qty-label">Quantity</span>
+        <div class="qty" role="group" aria-labelledby="qty-label">
+          <button type="button" aria-label="Decrease quantity" data-qty-down><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button>
+          <output aria-live="polite" data-qty>1</output>
+          <button type="button" aria-label="Increase quantity" data-qty-up><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7h8M7 3v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button>
+        </div>
+      </div>
+      <form class="order xorder" aria-labelledby="order-title" novalidate data-order>
+        <div data-order-open>
+          <p class="order-title" id="order-title">{product.formTitle}</p>
+          <p class="x-reqnote">Fields marked <span aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+          <div class="order-fields">
+            <label class="field"><span>Your name <i aria-hidden="true">*</i></span><input name="name" type="text" required autocomplete="name" data-err="Enter your name." aria-describedby="err-name"><b class="field-err" id="err-name"></b></label>
+            <label class="field"><span>Lab name <i aria-hidden="true">*</i></span><input name="lab" type="text" required autocomplete="organization" data-err="Enter your lab’s name." aria-describedby="err-lab"><b class="field-err" id="err-lab"></b></label>
+            <label class="field"><span>Email <i aria-hidden="true">*</i></span><input name="email" type="email" required autocomplete="email" data-err="Enter an email address, like name@lab.com." aria-describedby="err-email"><b class="field-err" id="err-email"></b></label>
+            {isKit ? (
+              <label class="field"><span>Shipping address <i aria-hidden="true">*</i></span><input name="address" type="text" required autocomplete="street-address" data-err="Enter the address to ship the kit to." aria-describedby="err-address"><b class="field-err" id="err-address"></b></label>
+            ) : (
+              <label class="field"><span>Cases per month <em class="x-opt">Optional</em></span><input name="cases" type="number" min="1" inputmode="numeric" data-err="Enter 1 or more, or leave it empty." aria-describedby="err-cases"><b class="field-err" id="err-cases"></b></label>
+            )}
+          </div>
+          <p class="x-paynote">This sends a request to Elident — <b>no payment is taken online.</b> Elident confirms price, delivery and payment with you by email.</p>
+          <button class="btn btn-primary order-btn" type="submit" aria-busy="false" data-order-btn data-label={product.formCta}>{product.formCta}<Arrow size={16} /></button>
+        </div>
+        <div class="order-done" role="status" data-order-done style="display: none"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5"></circle><path d="M8.5 14.5l3.5 3.5 7.5-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><p><b>{product.doneTitle}</b>Quantity: <span data-qty-done>1</span>. No payment was taken. Prototype: requests are not sent yet. Elident replies once ordering is connected.</p></div>
+      </form>
+      <div class="buy-actions">
+        {isKit ? (
+          <a class="btn btn-secondary" href="/shop">Compare the two systems</a>
+        ) : (
+          <a class="btn btn-secondary" href="/product/kit">Try the Sample Kit first</a>
+        )}
+      </div>
+      <p class="fine">Questions? <a href="/about#contact">Contact Elident</a>.</p>
+    </aside>
+  </div>
+
+  <section class="wrap xpdp-details" aria-labelledby="pd-title">
+    <div class="xsec-t"><p class="x-label"><span class="x-idx">01</span> · Specification</p><h2 id="pd-title" class="x-h2">{product.detailTitle}</h2></div>
+    <dl class="xspec xspec-lg">
+      <dt>Format</dt><dd>{product.use}</dd>
+      <dt>{product.packLabel}</dt><dd>{product.packValue}</dd>
+      <dt>Price</dt><dd>{priceText(product)} <small>{priceSub(product)}</small></dd>
+      <dt>Ordering</dt><dd>Request online · Elident confirms delivery and payment by email</dd>
+    </dl>
+  </section>
+
+  <section class="xbench x-dark" aria-labelledby="bench-title">
+    <div class="wrap">
+      <div class="xsec-t"><p class="x-label"><span class="x-idx">02</span> · In the lab</p><h2 id="bench-title" class="x-h2">At the <em>bench.</em></h2></div>
+      <div class="xbench-grid">
+        {bench.map((b) => (
+          <figure class={`xbench-fig ${b.cls}`}><div class="ph x-mask"><img src={b.src} alt={b.alt} loading="lazy"></div><figcaption><span class="x-idx">{b.num}</span> {b.cap}</figcaption></figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="xcmp" aria-labelledby="cmp-title"><div class="wrap">
+    <div class="xsec-t"><p class="x-label"><span class="x-idx">03</span> · Choosing a format</p><h2 data-split id="cmp-title" class="x-h2">Reusable or <em>disposable?</em></h2></div>
+    <div class="xcmp-grid">
+      {systems.map((p) => (
+        <div class="xcmp-col">
+          <p class="eyebrow">{p.catLabel}</p>
+          <h3 class="xcmp-name">{p.short}</h3>
+          <dl class="xspec"><dt>Use</dt><dd>{p.cmpUse}</dd><dt>Pack size</dt><dd>{p.cmpPack}</dd><dt>Price</dt><dd>{p.cmpPrice}</dd></dl>
+          <a class="x-arrow" href={productHref(p.id)}>{p.cta}<Arrow /></a>
+        </div>
+      ))}
+    </div>
+  </div></section>
+
+  <section class="xrel" aria-labelledby="rel-title"><div class="wrap">
+    <div class="xsec-t"><p class="x-label"><span class="x-idx">04</span> · Also from Elident</p><h2 data-split id="rel-title" class="x-h2">More from <em>the shop.</em></h2></div>
+    <div class="xrel-grid">
+      {related.map((p) => (
+        <a class="xrel-item" href={productHref(p.id)}><div class="ph x-mask"><img src={p.media.src} alt="" loading="lazy"></div><span class="eyebrow">{p.catLabel}</span><span class="xrel-name">{p.name}</span><span class="xrel-price">{priceText(p)} <small>{priceSub(p)}</small></span><span class="x-arrow" aria-hidden="true">View product<Arrow /></span></a>
+      ))}
+    </div>
+  </div></section>
+</div>
+</Base>

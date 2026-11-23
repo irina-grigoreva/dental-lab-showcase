@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import Arrow from '../components/Arrow.astro';
+import { ABOUT_CHAPTERS, CONTACT, MEDIA, STMT_WORDS } from '../data/content';
+
+const mailRequest = `mailto:${CONTACT.email}?subject=${encodeURIComponent('Request: Elident')}`;
+---
+<Base
+  title="About & Contact — Elident"
+  description="Elident was designed by dental technician Ilya Aronov. Contact Elident in Flushing, New York."
+  page="about"
+>
+<div class="page xabout" data-about>
+  <section class="wrap xab-hero" aria-labelledby="about-h">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">About &amp; Contact</span></nav>
+    <div class="xab-grid">
+      <p class="x-label xab-label"><span class="x-idx">About Elident</span> · Flushing, New York</p>
+      <h1 data-split id="about-h" class="x-display xab-title">Made by a dental technician, <em>for the lab bench.</em></h1>
+      <figure class="xab-media"><div class="ph x-mask"><img src={MEDIA.aronov.src} alt={MEDIA.aronov.alt}></div><figcaption class="x-tag-l">Fig. 01 — The Elident system at the lab bench</figcaption></figure>
+      <div class="xab-copy">
+        <p class="xab-by"><span class="xab-mark" aria-hidden="true"></span><span><b>Ilya Aronov</b>Dental technician · designer of the Elident articulator</span></p>
+        <p class="xabout-lead">Elident articulators were designed by Ilya Aronov, a dental technician. The system comes from his own bench work: mounting models, checking the bite, and finishing restorations case after case.</p>
+        <p class="xabout-text">Elident is available as a reusable system and as single-use articulators, with a sample kit for labs that want to try it first.</p>
+        <dl class="xfacts">
+          <div><dt>Uses tested · reusable</dt><dd>20×</dd></div>
+          <div><dt>Embossed on the tray</dt><dd>U.S. Pat.</dd></div>
+          <div><dt>Flushing, New York</dt><dd>NY</dd></div>
+        </dl>
+        <div class="btn-row"><a class="btn btn-primary" href="/shop">Browse the shop<Arrow /></a><a class="x-arrow" href="#contact">Contact Elident<Arrow /></a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="xab-story" aria-labelledby="story-h">
+    <div class="wrap xab-story-in">
+      <div class="stmt-grid xab-stmt" data-stmt>
+        <p class="eyebrow">Made at the bench</p>
+        <p class="stmt-text" id="story-h">{STMT_WORDS.map((w) => <><span class="sw">{w} </span></>)}</p>
+      </div>
+      <ol class="xab-chapters">
+        {ABOUT_CHAPTERS.map((c) => (
+          <li class={`xab-ch ${c.cls}`}>
+            <figure class="xab-ch-media"><div class="ph x-mask"><img src={c.src} alt={c.alt} loading="lazy"></div></figure>
+            <div class="xab-ch-copy"><p class="x-label"><span class="x-idx">{c.num}</span> · {c.k}</p><h3 class="xab-ch-title">{c.title}</h3><p class="xab-ch-text">{c.text}</p></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="xcontact xcontact-light" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div class="xct-top"><p class="x-label"><span class="x-idx">Contact</span> · Elident</p><p class="x-label">Flushing, New York</p></div>
+      <div class="xct-grid">
+        <div class="xct-left">
+          <h2 data-split id="contact-title" class="xct-h">Talk to <em>Elident.</em></h2>
+          <p class="xct-lead">Questions about the system, a quote, or the sample kit — reach Elident directly.</p>
+          <div class="xct-cta">
+            <a class="btn btn-primary" href={mailRequest}>Email a request<Arrow /></a>
+            <a class="btn btn-secondary" href="/product/kit">View Sample Kit</a>
+          </div>
+        </div>
+        <div class="xct-right">
+          <div class="xct-email"><span class="xct-k">Email</span><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></div>
+          <dl class="xct-list">
+            <div><dt class="xct-k">Phone</dt><dd><a href={CONTACT.phoneHref}>{CONTACT.phone}</a></dd></div>
+            <div><dt class="xct-k">Fax</dt><dd>{CONTACT.fax}</dd></div>
+            <div class="xct-addr"><dt class="xct-k">Address</dt><dd><address><a class="xct-map" href={CONTACT.mapHref} target="_blank" rel="noopener noreferrer" aria-label="144-13 75th Avenue, Flushing, NY 11367 — open in Google Maps (new tab)">144-13 75th Avenue<br>Flushing, NY 11367</a></address><a class="xct-maplink" href={CONTACT.mapHref} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">Open in Google Maps<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3.5 8.5l5-5M4.5 3.5h4v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</Base>

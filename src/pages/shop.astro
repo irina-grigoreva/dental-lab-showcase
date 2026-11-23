@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import Arrow from '../components/Arrow.astro';
+import { FILTERS, MEDIA, PRODUCTS, priceSub, priceText, productHref } from '../data/content';
+
+const items = PRODUCTS.map((p, i) => ({ ...p, num: '0' + (i + 1), href: productHref(p.id), hid: 'prod-' + p.id, priceText: priceText(p), priceSub: priceSub(p) }));
+const counts = (id: string) => (id === 'all' ? PRODUCTS.length : PRODUCTS.filter((p) => p.cat === id).length);
+---
+<Base
+  title="Shop — Elident dental articulators"
+  description="The Elident shop: reusable articulators, disposable sets and the sample kit, with prices from Elident’s catalog."
+  page="shop"
+>
+<div class="page xshop" data-shop>
+  <section class="xhero x-dark" aria-labelledby="shop-title">
+    <figure class="xhero-media">
+      <div class="ph x-mask"><img src={MEDIA.hero.src} alt={MEDIA.hero.alt}></div>
+      <figcaption class="x-tag">Fig. 01 — Reusable articulator, empty and mounted</figcaption>
+    </figure>
+    <div class="wrap xhero-in">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Shop</span></nav>
+      <p class="x-label"><span class="x-idx">Catalog</span> · 03 products · Prices from Elident’s catalog</p>
+      <h1 data-split id="shop-title" class="x-display">The Elident <em>shop.</em></h1>
+      <p class="x-lead">Articulators and the sample kit, with prices from Elident’s catalog. Send a request and Elident confirms delivery.</p>
+      <ol class="x-index" aria-label="Products">
+        {items.map((p) => (
+          <li><a href={p.href}><span class="x-idx">{p.num}</span><span class="x-index-name">{p.short}</span><span class="x-index-price">{p.priceText}</span></a></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="xcat" aria-label="Catalog"><div class="wrap">
+    <div class="xfilter-bar">
+      <div class="xseg" role="group" aria-label="Filter products" data-seg>
+        <span class="xseg-ind" aria-hidden="true"></span>
+        {FILTERS.map((f, i) => (
+          <button type="button" class:list={['xseg-btn', i === 0 && 'is-on']} aria-pressed={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? '0' : '-1'} data-filter={f.id}>{f.label}<span class="xseg-n">{counts(f.id)}</span></button>
+        ))}
+      </div>
+      <p class="x-count" aria-live="polite" data-count>Showing {PRODUCTS.length} products</p>
+    </div>
+    <div class="xlist" data-list>
+      {items.map((p, i) => (
+        <article class:list={['xprod', i % 2 === 1 && 'is-flip']} data-id={p.id} aria-labelledby={p.hid}>
+          <a class="xprod-media" href={p.href} tabindex="-1" aria-hidden="true">
+            <div class="ph x-mask"><img src={p.media.src} alt="" loading="lazy"></div>
+            <span class="x-chip">{p.num} / 03</span>
+          </a>
+          <div class="xprod-info">
+            <p class="eyebrow">{p.catLabel}</p>
+            <h2 class="xprod-name" id={p.hid}><a href={p.href}>{p.name}</a></h2>
+            <p class="xprod-blurb">{p.blurb}</p>
+            <dl class="xspec">
+              <dt>Use</dt><dd>{p.use}</dd>
+              <dt>{p.packLabel}</dt><dd>{p.packValue}</dd>
+            </dl>
+            <div class="xprod-buy">
+              <p class="xprice">{p.priceText}<small>{p.priceSub}</small></p>
+              <a class="btn btn-primary x-pxbtn" href={p.href}>View product<Arrow /></a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div></section>
+</div>
+</Base>
