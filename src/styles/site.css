@@ -1047,6 +1047,9 @@ html.lenis,html.lenis body{height:auto}
 .el .px-tr{display:none}
 .el[data-gs] .px-tr{display:grid;gap:0;overflow:hidden;width:100%;height:calc(100cqi / var(--px-cols, 24) * var(--px-rows, 5));grid-template-columns:repeat(var(--px-cols, 24),1fr);grid-template-rows:repeat(var(--px-rows, 5),1fr)}
 .el .px-cell{margin:0 -1px -1px 0}
+/* Page change: hidden until the covering squares are built (safety: shown anyway after 1.5s) */
+html[data-px-in] body > :not(.px-overlay){visibility:hidden;animation:px-safe 0s 1.5s forwards}
+@keyframes px-safe{to{visibility:visible}}
 .el[data-gs] .px-tr + .sec{border-top:0}
 
 .el .gs-line-mask{padding-bottom:.12em;margin-bottom:-.12em}

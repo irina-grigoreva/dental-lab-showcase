@@ -40,7 +40,11 @@ const canonical = new URL(Astro.url.pathname, SITE.url).href;
     // First paint: dark background until the intro is ready, so it never starts with a white flash.
     (function () {
       try {
-        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.style.background = '#0B0F17';
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.style.background = '#0B0F17';
+          // Arriving through the pixel transition: keep the page hidden until the squares are in place.
+          if (sessionStorage.getItem('elident-px-in')) document.documentElement.setAttribute('data-px-in', '');
+        }
       } catch (e) {}
     })();
   </script>

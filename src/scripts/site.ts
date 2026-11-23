@@ -754,29 +754,52 @@ function boot(root: HTMLElement) {
     const cells: HTMLElement[] = [];
     for (let i = 0; i < cols * rows; i++) {
       const c = document.createElement('div');
-      c.style.margin = '0 -1px -1px 0';
-      c.style.backgroundColor = PX_PALETTE[Math.floor(Math.random() * PX_PALETTE.length)];
+      c.style.cssText = `margin:0 -1px -1px 0;will-change:transform;background-color:${PX_PALETTE[Math.floor(Math.random() * PX_PALETTE.length)]}`;
       ov.appendChild(c);
       cells.push(c);
     }
     document.body.appendChild(ov);
     return { ov, cells };
   };
-  // Leaving: a click on an internal link covers the page, then the browser follows the link.
+  // Internal page links that get the transition.
+  const pxLink = (t: EventTarget | null): URL | null => {
+    const a = (t as HTMLElement | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+    if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return null;
+    const url = new URL(a.href, window.location.href);
+    if (url.origin !== window.location.origin || url.pathname === window.location.pathname) return null;
+    return url;
+  };
+  // Warm the cache for the next page on hover / touch, so it is ready when the squares close.
+  const prefetched = new Set<string>();
+  const prefetch = (url: URL) => {
+    const href = url.origin + url.pathname;
+    if (prefetched.has(href)) return;
+    prefetched.add(href);
+    const l = document.createElement('link');
+    l.rel = 'prefetch';
+    l.href = href;
+    document.head.appendChild(l);
+  };
+  ['pointerover', 'touchstart', 'focusin'].forEach((t) => document.addEventListener(t, (e) => {
+    const url = pxLink(e.target);
+    if (url) prefetch(url);
+  }, { passive: true }));
+  // Leaving: a click on an internal link covers the page. Navigation starts while the squares are
+  // still filling in, so the new page loads during the animation instead of after it.
   document.addEventListener('click', (e) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    const a = (e.target as HTMLElement).closest?.('a[href]') as HTMLAnchorElement | null;
-    if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
-    const url = new URL(a.href, window.location.href);
-    if (url.origin !== window.location.origin || url.pathname === window.location.pathname) return;
+    const url = pxLink(e.target);
+    if (!url) return;
     const g0 = gsapLib();
     if (!g0 || reduced()) return;
     e.preventDefault();
+    prefetch(url);
     store.set(PIXEL_KEY, '1');
     const { cells } = pixelOverlay();
     g0.set(cells, { scale: 0 });
-    g0.timeline({ onComplete: () => { window.location.href = url.href; } })
-      .to(cells, { scale: 1, duration: 0.2, ease: 'power2.out', stagger: { each: 0.0025, from: 'random' } });
+    g0.timeline()
+      .to(cells, { scale: 1, duration: 0.3, ease: 'power2.inOut', stagger: { amount: 0.3, from: 'random' } })
+      .call(() => { window.location.href = url.href; }, [], 0.42);
   });
   // Arriving: if the previous page started a transition, the squares start covered and clear.
   const arriving = store.get(PIXEL_KEY);
@@ -785,9 +808,18 @@ function boot(root: HTMLElement) {
   if (arriving && gEnter && !reduced()) {
     const { ov, cells } = pixelOverlay();
     gEnter.set(cells, { scale: 1 });
-    gEnter.to(cells, { scale: 0, duration: 0.26, ease: 'power2.in', stagger: { each: 0.003, from: 'random' },
+    document.documentElement.removeAttribute('data-px-in');
+    gEnter.to(cells, { scale: 0, duration: 0.34, ease: 'power2.inOut', stagger: { amount: 0.36, from: 'random' },
       onComplete: () => ov.remove() });
+  } else {
+    document.documentElement.removeAttribute('data-px-in');
   }
+  // Back/forward cache: a restored page must not keep the closed overlay.
+  window.addEventListener('pageshow', (e) => {
+    if (!(e as PageTransitionEvent).persisted) return;
+    $$('.px-overlay').forEach((o) => o.remove());
+    store.del(PIXEL_KEY);
+  });
 
   /* ---------- Initial paint ---------- */
   updateTop();
