@@ -1,0 +1,47 @@
+---
+import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
+import { NOTES, readTime } from '../../data/content';
+
+export function getStaticPaths() {
+  return NOTES.map((n) => ({ params: { slug: n.slug } }));
+}
+
+const cur = NOTES.find((n) => n.slug === Astro.params.slug) ?? NOTES[0];
+const rel = NOTES.filter((n) => n.slug !== cur.slug).map((n) => ({ ...n, readTime: readTime(n), num: '0' + (NOTES.indexOf(n) + 1) }));
+const time = readTime(cur);
+---
+<Base title={`${cur.title} — Elident Lab Notes`} description={cur.dek} page="note">
+<article class="page xart" aria-labelledby="note-title" data-note>
+  <header class="wrap xart-head">
+    <a class="back" href="/notes"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Lab Notes</a>
+    <p class="x-label"><span class="x-idx">{cur.topic}</span> · {time}</p>
+    <h1 data-split class="xart-title" id="note-title">{cur.title}</h1>
+    <p class="xart-dek">{cur.dek}</p>
+  </header>
+  <figure class="xart-cover">
+    <div class="ph x-mask"><img src={cur.cover} alt={cur.alt} style={`object-position: ${cur.pos}`}></div>
+    <figcaption class="wrap">{cur.caption}</figcaption>
+  </figure>
+  <div class="xart-main"><div class="wrap">
+    <div class="xart-body">
+      {cur.blocks.map((b) =>
+        b.t === 'p' ? <p>{b.text}</p> : b.t === 'h' ? <h2>{b.text}</h2> : <ul>{b.items.map((it) => <li>{it}</li>)}</ul>,
+      )}
+    </div>
+    <aside class="xart-cta x-dark" aria-label="Next step">
+      <p>{cur.cta.text}</p>
+      <a class="btn btn-primary" href={cur.cta.href}>{cur.cta.label}<Arrow size={16} /></a>
+    </aside>
+  </div></div>
+  <section class="xart-rel" aria-labelledby="more-notes"><div class="wrap">
+    <div class="xsec-t"><p class="x-label"><span class="x-idx">More</span> · Lab Notes</p><h2 id="more-notes" class="x-h2">Keep <em>reading.</em></h2></div>
+    <div class="xrel-grid">
+      {rel.map((n) => (
+        <a class="xrel-item" href={`/notes/${n.slug}`}><div class="ph x-mask"><img src={n.cover} alt="" loading="lazy" style={`object-position: ${n.pos}`}></div><span class="eyebrow">{n.topic} · {n.readTime}</span><span class="xrel-name">{n.title}</span><span class="x-arrow" aria-hidden="true">Read the note<Arrow /></span></a>
+      ))}
+    </div>
+    <div class="note-foot"><a class="back" href="/notes"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Back to Lab Notes</a></div>
+  </div></section>
+</article>
+</Base>
