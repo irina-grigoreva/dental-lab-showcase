@@ -1,0 +1,36 @@
+---
+import { CONTACT, LOGO_DARK } from '../data/content';
+---
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-top">
+      <div class="lead"><img class="ftr-logo" src={LOGO_DARK} alt="Elident Articulator" width="178" height="44"><p>Dental articulators for the lab bench. Designed by dental technician Ilya Aronov.</p><address class="small" style="font-style: normal; margin-top: 20px; color: #D0D5DD; line-height: 1.6"><a href={CONTACT.mapHref} target="_blank" rel="noopener noreferrer" aria-label="144-13 75th Avenue, Flushing, NY 11367 — open in Google Maps (new tab)">144-13 75th Avenue, Flushing, NY 11367</a><br><span style="display: inline-block; margin-top: 8px"><a href={CONTACT.phoneHref}>{CONTACT.phone}</a><span style="display: inline-block; width: 28px"></span><span>Fax {CONTACT.fax}</span></span><br><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></address></div>
+      <nav class="ftr-nav" aria-label="Footer">
+        <div class="ftr-col">
+          <h2 class="ftr-h">Products</h2>
+          <ul>
+            <li><a href="/shop">Shop all</a></li>
+            <li><a href="/product/reusable">Reusable System</a></li>
+            <li><a href="/product/disposable">Disposable Articulators</a></li>
+            <li><a href="/product/kit">Sample Kit</a></li>
+          </ul>
+        </div>
+        <div class="ftr-col">
+          <h2 class="ftr-h">Company</h2>
+          <ul>
+            <li><a href="/#how-it-works">How It Works</a></li>
+            <li><a href="/notes">Lab Notes</a></li>
+            <li><a href="/about">About &amp; Contact</a></li>
+            <li><a href="https://www.youtube.com/watch?v=_0YaHwrIYu8" target="_blank" rel="noopener noreferrer" aria-label="Setup video on YouTube (opens in a new tab)">Setup video<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></li>
+          </ul>
+        </div>
+        <div class="ftr-cta">
+          <p>Try Elident on your own cases.</p>
+          <a class="btn btn-primary ftr-btn" href="/product/kit">View Sample Kit<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+        </div>
+      </nav>
+    </div>
+    <p class="ftr-word" data-split-chars aria-hidden="true">elident<span>.</span></p>
+    <div class="ftr-legal"><span>© 2026 Elident</span><span>Prototype — prices and specifications to be confirmed</span></div>
+  </div>
+</footer>
