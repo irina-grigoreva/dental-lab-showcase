@@ -1,0 +1,84 @@
+---
+import '../styles/site.css';
+import '../styles/overrides.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { LOGO_DARK, SITE } from '../data/content';
+
+interface Props {
+  title: string;
+  description: string;
+  page: 'home' | 'shop' | 'product' | 'notes' | 'note' | 'about';
+  image?: string;
+}
+const { title, description, page, image = SITE.ogImage } = Astro.props;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{title}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#F5F7FA">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Elident">
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:url" content={canonical}>
+  <meta property="og:image" content={new URL(image, SITE.url).href}>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  <meta name="twitter:image" content={new URL(image, SITE.url).href}>
+  <link rel="preload" as="image" href={LOGO_DARK}>
+  <link rel="stylesheet" href="/fonts/fonts.css">
+  <script is:inline>
+    // First paint: dark background until the intro is ready, so it never starts with a white flash.
+    (function () {
+      try {
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.style.background = '#0B0F17';
+      } catch (e) {}
+    })();
+  </script>
+  <script is:inline src="/_blob/d10782d683d43dd1fc0af52afae75301"></script>
+  <script is:inline src="/_blob/098ce05a09c1a23e6e8d6eceec4eb118"></script>
+  <script is:inline src="/_blob/fb2d79326f0e0fb62d78361acad37b6a"></script>
+  <script is:inline src="/_blob/a2de8669871acafdf93973a1553c9e6a"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="el" data-page={page} data-root>
+  <div class="cursor" aria-hidden="true" data-cursor-el>View</div>
+
+  <div class="intro" aria-hidden="true" data-intro>
+    <div class="intro-stage">
+      <div class="intro-mark"><img class="intro-logo" src={LOGO_DARK} alt="" width="240" height="59"><span class="intro-sheen"></span></div>
+      <span class="intro-line"></span>
+      <span class="intro-label">Dental articulators · Made in U.S.A.</span>
+    </div>
+  </div>
+
+  <Header page={page} />
+
+  <main id="main" tabindex="-1" data-main>
+    <slot />
+    {page !== 'home' && <div class="px-tr px-tr-end" data-px data-px-from="main .page > :last-child" data-px-to=".ftr" aria-hidden="true"></div>}
+  </main>
+
+  <Footer />
+
+  <div class="totop-wrap">
+    <button type="button" class="totop" aria-label="Back to top" title="Back to top" aria-hidden="true" tabindex="-1" data-totop>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 16V4M5 9l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Top</span>
+    </button>
+  </div>
+</div>
+<script>
+  import '../scripts/site';
+</script>
+</body>
+</html>
