@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
+import { NOTES, readTime } from '../../data/content';
+
+const feat = NOTES.find((n) => n.featured) ?? NOTES[0];
+const rest = NOTES.filter((n) => n.slug !== feat.slug).map((n, i) => ({
+  ...n,
+  readTime: readTime(n),
+  num: '0' + (NOTES.indexOf(n) + 1),
+  layoutCls: i % 2 ? 'is-tall' : 'is-wide',
+}));
+const count = '0' + NOTES.length;
+---
+<Base title="Lab Notes — Elident" description="A closer look at Elident articulators, from model setup to choosing a system for your bench." page="notes">
+<div class="page xnotes" data-notes>
+  <header class="wrap xnotes-head">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Lab Notes</span></nav>
+    <p class="x-label"><span class="x-idx">Journal</span> · {count} notes</p>
+    <h1 data-split class="x-display">Lab <em>Notes.</em></h1>
+    <p class="x-lead">A closer look at Elident articulators, from model setup to choosing a system for your bench.</p>
+  </header>
+  <a class="wrap xfeat" href={`/notes/${feat.slug}`}>
+    <div class="xfeat-media"><div class="ph x-mask"><img src={feat.cover} alt={feat.alt} style={`object-position: ${feat.pos}`}></div></div>
+    <div class="xfeat-copy">
+      <p class="x-label"><span class="x-idx">Featured</span> · {feat.topic} · {readTime(feat)}</p>
+      <h2 class="xfeat-title">{feat.title}</h2>
+      <p class="xfeat-dek">{feat.dek}</p>
+      <span class="x-arrow">Read the note<Arrow /></span>
+    </div>
+  </a>
+  <div class="xnotes-listw"><div class="wrap xnotes-list">
+    {rest.map((n) => (
+      <a class:list={['xnote', n.layoutCls]} href={`/notes/${n.slug}`}>
+        <div class="ph x-mask"><img src={n.cover} alt={n.alt} loading="lazy" style={`object-position: ${n.pos}`}></div>
+        <p class="x-label"><span class="x-idx">{n.num}</span> · {n.topic} · {n.readTime}</p>
+        <h2 class="xnote-title">{n.title}</h2>
+        <p class="xnote-dek">{n.dek}</p>
+        <span class="x-arrow">Read the note<Arrow /></span>
+      </a>
+    ))}
+  </div></div>
+</div>
+</Base>
